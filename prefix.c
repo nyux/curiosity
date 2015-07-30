@@ -7,18 +7,18 @@
 
 #include "prefix.h"
 
-/* current ideas of what data structures i need:
- * a node_t for the linked list that is the stack
- * a value_t for whether a token is a double or malformed
- * an operator_t for what an operator is, the function that defines it, and
- *      how many operands it takes
- */
+/* TODO: the functions should be organized more clearly */
+
 
 bool should_quit(char *input)
 {
     return!strcmp(input, "q") || !strcmp(input, "quit") || !strcmp(input, "Q");
 }
 
+/* num_operands is an attempt at building scaffolding for the future, if i
+ * want to expand the calculator into using functions that take only one
+ * operand (like factorial or exp), or more than two operands. for the moment,
+ * though, i'm not touching that. */
 operator_t get_operator(char *operator_str)
 {
     if (strcmp(operator_str, "+") == 0)
@@ -122,7 +122,7 @@ double pop(queue_t *queue)
     return value;
 }
 
-/* current plan:
+/* general approach this takes:
  *  - parse the operator
  *  - skip ahead to the next token
  *  - test if is a parenthesis
