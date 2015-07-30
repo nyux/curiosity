@@ -15,8 +15,8 @@ struct queue
 struct operator 
 {
     bool is_valid;
-    int num_operands; /* if invalid, -1 */
-    double (*fn)(double x, double y); /* if invalid, NULL */
+    int num_operands; /* if invalid, left uninitialized */
+    double (*fn)(double x, double y); /* if invalid, left uninitialized */
 };
 
 struct subexpression
