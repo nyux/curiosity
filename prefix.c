@@ -5,6 +5,8 @@
 
 #include <editline/readline.h>
 
+#include "prefix.h"
+
 /* current ideas of what data structures i need:
  * a node_t for the linked list that is the stack
  * a value_t for whether a token is a double or malformed
@@ -12,29 +14,38 @@
  *      how many operands it takes
  */
 
-struct node {
-    double value;
-    struct node *next;
-};
-
-struct value {
-    bool is_valid;
-    double value; /* if invalid input, NAN */
-};
-
-struct operator {
-    bool is_valid;
-    int num_operands; /* if invalid, -1 */
-    double (*fn)(double x, double y); /* if invalid, NULL */
-};
-
-typedef struct node node_t;
-typedef struct value value_t ;
-typedef struct operator operator_t;
-
-bool should_quit(char *input) {
+bool should_quit(char *input)
+{
     return!strcmp(input, "q") || !strcmp(input, "quit") || !strcmp(input, "Q");
 }
+
+operator_t get_operation(char *operator_str)
+{
+    if (strcmp(operator_str, "+") == 0)
+    {
+        return new_operator_t(.fn = add, .num_operands = 2, .is_valid = true);
+    }
+    else if (strcmp(operator_str, "-") == 0)
+    {
+        return new_operator_t(.fn = subtract, .num_operands = 2, .is_valid = true);
+    }
+    else if (strcmp(operator_str, "*") == 0)
+    {
+        return new_operator_t(.fn = multiply, .num_operands = 2, .is_valid = true);
+    }
+    else if (strcmp(operator_str, "/") == 0)
+    {
+        return new_operator_t(.fn = divide, .num_operands = 2, .is_valid = true);
+    }
+    else return new_operator_t(.is_valid = false);
+}
+
+double add(double x, double y) { return x + y; }
+double subtract(double x, double y) { return x - y; }
+double multiply(double x, double y) { return x * y; }
+double divide(double x, double y) { return x / y; }
+
+double unroll_stack() { return 0.0; }
 
 /* current plan:
  *  - parse the operator
@@ -45,20 +56,23 @@ bool should_quit(char *input) {
  *  - if is a number, add to stack
  *  - once you reach the end of the string, do calculation and return result
  */
-double calculate(char *str_to_parse) {
+double calculate(char *str_to_parse)
+{
     char *saveptr;
     char *operation_str = strtok_r(str_to_parse, " ", &saveptr);
     char *token;
 
     operator_t operation = get_operation(operation_str);
 
-    if (!operation.is_valid) {
+    if (!operation.is_valid)
+    {
         free(str_to_parse);
         puts("invalid input");
         exit(-1);
     }
 
-    while ((token = strtok_r(NULL, " ", &saveptr))) {
+    while ((token = strtok_r(NULL, " ", &saveptr)))
+    {
         break;
     }
 
@@ -68,13 +82,16 @@ double calculate(char *str_to_parse) {
     return 0.0;
 }
 
-int main(void) {
+int main(void)
+{
     char *input = "";
 
-    while (true) {
+    while (true)
+    {
         input = readline("calc> ");
 
-        if (should_quit(input)) {
+        if (should_quit(input))
+        {
             free(input);
             break;
         }
